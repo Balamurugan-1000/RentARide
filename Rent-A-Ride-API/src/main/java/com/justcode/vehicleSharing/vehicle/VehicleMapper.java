@@ -1,22 +1,27 @@
 package com.justcode.vehicleSharing.vehicle;
 
 
-import com.justcode.vehicleSharing.file.FileUtils;
+
 import com.justcode.vehicleSharing.history.VehicleTransactionHistory;
 import org.springframework.stereotype.Service;
+
+import java.util.Base64;
 
 @Service
 public class VehicleMapper {
     public Vehicle toVehicle(VehicleRequest request) {
+  
         return Vehicle.builder()
                 .id(request.id())
                 .phone(request.phone())
                 .carModel(request.carModel())
                 .ownerName(request.ownerName())
                 .description(request.description())
+                .licensePlate(request.licensePlate())
                 .archived(false)
                 .price(request.price())
                 .shareable(request.shareable())
+                .vehicleCover(request.cover())
                 .build();
     }
 
@@ -32,7 +37,7 @@ public class VehicleMapper {
                 .phone(vehicle.getPhone())
                 .price(vehicle.getPrice())
                 .shareable(vehicle.isShareable())
-                .cover(FileUtils.readFileFromLocation(vehicle.getVehicleCover()))
+                .cover(vehicle.getVehicleCover())
                 .build();
     }
 

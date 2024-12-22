@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository;
 
 public interface VehicleRepository extends JpaRepository<Vehicle , Integer>  , JpaSpecificationExecutor<Vehicle> {
     @Query("""
-    SELECT vehicle 
+    SELECT vehicle\s
     FROM Vehicle vehicle
-    WHERE vehicle.archived =false 
-    AND vehicle.shareable = true 
+    WHERE vehicle.archived =false\s
+    AND vehicle.shareable = true\s
     AND vehicle.owner.id != :userId
 """)
     Page<Vehicle> findAllDisplayableVehicles(Pageable pageable, Integer userId);

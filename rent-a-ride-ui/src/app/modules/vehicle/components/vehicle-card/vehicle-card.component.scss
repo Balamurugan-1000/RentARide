@@ -1,0 +1,46 @@
+div{
+  &.card{
+    max-height: 450px;
+    max-width: 450px;
+    overflow: scroll;
+  }
+}
+
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.card-footer{
+  background: #f2f2f2;
+}
+.text-warning{
+  color: #956116;
+  font-style: italic;
+  font-size: large;
+  font-weight: bolder;
+
+}
+
+.card {
+  max-width: 20rem;
+  margin: 1rem auto;
+
+  img {
+    height: 15rem;
+  }
+
+  @media (min-width: 992px) { // Large screens (Bootstrap breakpoint for `lg`)
+    max-width: 30rem; // Increase card width
+    img {
+      height: 20rem; // Adjust image height proportionally
+    }
+  }
+
+  @media (min-width: 1200px) { // Extra large screens (Optional)
+    max-width: 35rem; // Further increase card width for very large screens
+    img {
+      height: 25rem;
+    }
+  }
+}

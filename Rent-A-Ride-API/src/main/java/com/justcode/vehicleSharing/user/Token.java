@@ -3,7 +3,6 @@ package com.justcode.vehicleSharing.user;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 

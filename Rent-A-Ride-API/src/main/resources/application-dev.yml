@@ -7,10 +7,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   mail:
@@ -35,14 +39,20 @@ spring:
 application:
   security:
     jwt:
-      secret-key : faedsfrewqTferwewtjklwnvtioq4l3ytioutbnvh43tilouqttjpw4oe
-      expiration : 45600000
-  mailing :
-    frontend :
-      activational-url : http://localhost:4200/activate-account
+      secret-key: faedsfrewqTferwewtjklwnvtioq4l3ytioutbnvh43tilouqttjpw4oe
+      expiration: 45600000
+  mailing:
+    frontend:
+      activational-url: http://localhost:4200/activate-account
   file:
     upload:
-      photos-output-path: ./uploads
+      photos-output-path: ../rent-a-ride-ui/public/uploads
+  supabase:
+    url: https://rzfklbtsaxcibtvrcysa.supabase.co
+    anon-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6ZmtsYnRzYXhjaWJ0dnJjeXNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0NjIxNTEsImV4cCI6MjA1MDAzODE1MX0.YIXU2sOf6NZ1AXWTxxsor3d37NBeTi_LnmHR8Aw1eDg
+    bucket-name: vehicle-images
+
+
 server:
   port: 8088
 

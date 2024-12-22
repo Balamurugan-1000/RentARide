@@ -6,6 +6,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Vehicle")
 public class VehicleController {
     private final  VehicleService service;
-    @PostMapping
-    public ResponseEntity<Integer> saveVehicle(
+    private static final Logger logger = LoggerFactory.getLogger(VehicleController.class);
+
+    @PostMapping("")
+    public   ResponseEntity<Integer> saveVehicle(
             @Valid @RequestBody VehicleRequest request,
             Authentication connectedUser
     ){
+        System.out.println("Hii");
         return ResponseEntity.ok(service.save(request , connectedUser));
     }
 
@@ -32,13 +38,15 @@ public class VehicleController {
         return ResponseEntity.ok(service.findById(vehicleId));
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<PageResponse<VehicleResponse>> findAllVehicles(
-            @RequestParam (name="page" , defaultValue = "0" , required = false) int page,
-            @RequestParam (name="size" , defaultValue = "10" , required = false) int size,
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size,
             Authentication connectedUser
-    ){
-        return ResponseEntity.ok(service.findAllVehicle(page,size,connectedUser));
+    ) {
+
+
+        return ResponseEntity.ok(service.findAllVehicle(page, size, connectedUser));
     }
     @GetMapping("/owner")
     public ResponseEntity<PageResponse<VehicleResponse>> findAllVehiclesByOwner(
@@ -106,18 +114,6 @@ public class VehicleController {
         return ResponseEntity.ok(service.approveReturnBorrowedVehicle(vehicleId , connectedUser));
     }
 
-    @PostMapping(value = "/covrt/{vehicle-id}" , consumes = "multipart/form-data")
-    public ResponseEntity<?> uploadVehicleCoverPicture(
-            @PathVariable("vehicle-id") int vehicleId,
-            @Parameter()
-            @RequestPart("file") MultipartFile file,
-
-            Authentication connectedUser
-    ){
-
-        service.uploadVehicleCoverPicture(file,connectedUser,vehicleId);
-        return ResponseEntity.accepted().build();
-    }
 
 
 }

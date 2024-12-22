@@ -17,9 +17,9 @@ public interface VehicleTransactionHistoryRepository extends JpaRepository<Vehic
     Page<VehicleTransactionHistory> findAllBorrowedVehicles(Pageable pageable, Integer userId);
 
     @Query("""
-        SELECT history 
+        SELECT history
         FROM VehicleTransactionHistory history
-        WHERE history.vehicle.owner.id = :userId        
+        WHERE history.vehicle.owner.id = :userId
 """)
     Page<VehicleTransactionHistory> findAllReturnedVehicles(Pageable pageable, Integer userId);
 

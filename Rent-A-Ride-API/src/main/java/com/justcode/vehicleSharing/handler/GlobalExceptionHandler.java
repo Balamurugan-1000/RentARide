@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.justcode.vehicleSharing.handler.BusinessErrorCodes.ACCOUNT_DISABLED;
-import static com.justcode.vehicleSharing.handler.BusinessErrorCodes.ACCOUNT_LOCKED;
-import static com.justcode.vehicleSharing.handler.BusinessErrorCodes.BAD_CREDENTIALS;
+import static com.justcode.vehicleSharing.handler.BusinessErrorCodes.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -110,4 +108,18 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
+
+    @ExceptionHandler(InvalidActivationCodeException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidActivationCodeException(InvalidActivationCodeException exp) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(
+                        ExceptionResponse.builder()
+                                .businessErrorCode(INVALID_ACTIVATION_CODE.getCode())
+                                .businessErrorDescription(INVALID_ACTIVATION_CODE.getDescription())
+                                .error(exp.getMessage())
+                                .build()
+                );
+    }
+
 }

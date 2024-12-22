@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.justcode.vehicleSharing.vehicle.VehicleSpecification.withOwnerId;
+import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 
 @Service
@@ -48,9 +49,11 @@ public class VehicleService {
         User user = ((User) connectedUser.getPrincipal());
         Pageable pageable = PageRequest.of(page,size , Sort.by("createdDate").descending());
         Page<Vehicle> vehicles = vehicleRepository.findAllDisplayableVehicles(pageable , user.getId());
+        System.out.println(vehicles);
         List<VehicleResponse> vehicleResponse = vehicles.stream()
                 .map(vehicleMapper::toVehicleResponse)
                 .toList();
+        System.out.println(vehicleResponse);
 
         return new PageResponse<>(
                 vehicleResponse,
@@ -185,11 +188,10 @@ public class VehicleService {
         }
         VehicleTransactionHistory vehicleTransactionHistory =
                 vehicleTransactionHistoryRepository.findByVehicleIdAndUserId(vehicleId , user.getId())
-                        .orElseThrow(() -> new OperationNotPermittedException("You didn't borroed this vehicle"))
-
+                        .orElseThrow(() -> new OperationNotPermittedException("You didn't borrowed this vehicle"))
                 ;
 
-        vehicleTransactionHistory.setReturned(true);;
+        vehicleTransactionHistory.setReturned(true);
 
     return vehicleTransactionHistoryRepository.save(vehicleTransactionHistory).getId();
 
@@ -218,11 +220,25 @@ public class VehicleService {
         return vehicleTransactionHistoryRepository.save(vehicleTransactionHistory).getId();
     }
 
-    public void uploadVehicleCoverPicture(MultipartFile file, Authentication connectedUser, int vehicleId) {
-        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
-        User user = ((User) connectedUser.getPrincipal());
-        var vehicleCover = fileStorageService.saveFile(file, user.getId());
-        vehicle.setVehicleCover(vehicleCover);
+//    public void uploadVehicleCoverPicture(MultipartFile file, Authentication connectedUser, int vehicleId) {
+//        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
+//        User user = ((User) connectedUser.getPrincipal());
+//        var vehicleCover = fileStorageService.uploadFileToSupabase(file, user.getId());
+//        vehicle.setVehicleCover(vehicleCover);
+//        vehicleRepository.save(vehicle);
+//
+//    }
+public Vehicle save(String url, Authentication connectedUser, int vehicleId) {
+    // Retrieve the vehicle or throw an exception if not found
+    Vehicle vehicle = vehicleRepository.findById(vehicleId)
+            .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
 
-    }
+    // Update the cover URL
+    vehicle.setVehicleCover(url);
+
+    // Save to the database
+    return  vehicleRepository.save(vehicle);
+}
+
+
 }

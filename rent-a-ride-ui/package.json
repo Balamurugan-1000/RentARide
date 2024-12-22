@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:rent-a-ride-ui": "node dist/rent-a-ride-ui/server/server.mjs"
+    "serve:ssr:rent-a-ride-ui": "node dist/rent-a-ride-ui/server/server.mjs",
+    "api-gen": " ng-openapi-gen --input ./src/openapi/openapi.json --output ./src/app/services"
   },
   "private": true,
   "dependencies": {
@@ -21,7 +22,13 @@
     "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.9",
+    "@fortawesome/fontawesome-free": "^6.6.0",
+    "@ng-bootstrap/ng-bootstrap": "^17.0.1",
+    "@supabase/supabase-js": "^2.47.8",
+    "angular-code-input": "^2.0.0",
+    "bootstrap": "5.3.3",
     "express": "^4.18.2",
+    "ng-openapi-gen": "^0.52.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
@@ -40,5 +47,6 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.5.2"
-  }
+  },
+  "packageManager": "pnpm@9.14.4+sha512.c8180b3fbe4e4bca02c94234717896b5529740a6cbadf19fa78254270403ea2f27d4e1d46a08a0f56c89b63dc8ebfd3ee53326da720273794e6200fcf0d184ab"
 }

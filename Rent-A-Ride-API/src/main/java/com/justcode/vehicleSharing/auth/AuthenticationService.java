@@ -2,6 +2,8 @@ package com.justcode.vehicleSharing.auth;
 
 import com.justcode.vehicleSharing.email.EmailService;
 import com.justcode.vehicleSharing.email.EmailTemplateName;
+import com.justcode.vehicleSharing.exception.OperationNotPermittedException;
+import com.justcode.vehicleSharing.handler.InvalidActivationCodeException;
 import com.justcode.vehicleSharing.role.RoleRepository;
 import com.justcode.vehicleSharing.security.JwtService;
 import com.justcode.vehicleSharing.user.Token;
@@ -36,6 +38,11 @@ public class AuthenticationService {
     private final JwtService jwtService;
 
     public void register(RegisterationRequest request) throws MessagingException {
+        var existingUser = userRepository.findByEmail(request.getEmail());
+        if(existingUser.isPresent()){
+            throw new OperationNotPermittedException("The User email Already exist");
+
+        }
         var userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new IllegalStateException("USER role was not initialized"));
         var user = User.builder()
@@ -77,7 +84,7 @@ public class AuthenticationService {
         var token = Token.builder()
                 .token(generatedToken)
                 .createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusMinutes(10))
+                .expiresAt(LocalDateTime.now().plusMonths(1))
                 .user(user)
                 .build();
         tokenRepository.save(token);
@@ -116,10 +123,10 @@ public class AuthenticationService {
 //    @Transactional
     public void activateAccount(String token) throws MessagingException {
         Token savedToken = tokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid token"));
+                .orElseThrow(() -> new InvalidActivationCodeException("Invalid token or Expired Token"));
         if(LocalDateTime.now().isAfter(savedToken.getExpiresAt())){
             sendValidationEmail(savedToken.getUser());
-            throw new RuntimeException("Activation TOken has been expired and new Token is sent!!!");
+            throw new InvalidActivationCodeException("Activation Token has expired, and a new token is sent!");
         }
         var user = savedToken.getUser();
         user.setEnabled(true);

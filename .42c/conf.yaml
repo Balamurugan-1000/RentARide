@@ -1,0 +1,3 @@
+apis:
+  rent-a-ride-ui/src/openapi/openapi.json:
+    alias: openapi-specification-balamuruga

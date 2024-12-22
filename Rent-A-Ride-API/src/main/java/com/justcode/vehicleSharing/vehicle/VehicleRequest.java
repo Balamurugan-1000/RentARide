@@ -22,8 +22,7 @@ public record VehicleRequest(
         @NotEmpty(message = "104")
         String phone,
         String price,
-        boolean shareable,
-       String VehicleCover
-) {
+        String cover,
+        boolean shareable) {
 
 }

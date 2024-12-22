@@ -1,0 +1,53 @@
+<div class="card position-relative shadow-sm mb-4 mx-auto h-100" style="max-width: 23rem; min-width: 17rem;">
+  <img [src]="vehicle.cover"
+       class="card-img-top position-sticky top-0 img-fluid" style="height: 15rem;"
+    alt="Vehicle Image">
+
+  <div class="card-body">
+    <h5 class="card-title fw-bold">
+      <i class="fa-solid fa-car-side text-primary me-2"></i>{{ vehicle.carModel }}
+    </h5>
+
+    <p class="card-text text-muted">
+      <strong class="text-dark">Owner:</strong> {{ vehicle.ownerName }}<br>
+      <strong class="text-dark">Phone:</strong> {{ vehicle.phone }}<br>
+      <strong class="text-dark">License Plate:</strong> {{ vehicle.licensePlate }}
+    </p>
+
+    <div class="d-flex py-2 justify-content-between align-items-center">
+      <p class="card-text text-success fw-bold">₹{{ vehicle.price }}</p>
+    </div>
+
+
+    <p>
+      {{
+      showFullDescription
+      ? vehicle.description
+      : (vehicle.description | slice:0:70) + (isLongDescription ? '...' : '')
+      }}
+
+      <button *ngIf="isLongDescription" type="button" class="btn btn-link p-0 text-primary text-decoration-none"
+        (click)="toggleDescription()">
+        {{ showFullDescription ? 'Show Less' : 'Read More' }}
+      </button>
+    </p>
+  </div>
+
+  <div class="card-footer  sticky-bottom z-2  d-flex justify-content-between align-items-center">
+    <div class="d-flex gap-2">
+      <app-rating [rating]="vehicle.rate || 0" />
+      <span *ngIf="vehicle.rate !=undefined && true  && vehicle.rate > 0"> {{ vehicle.rate }}/5
+      </span>
+    </div>
+    <div class="d-flex gap-3" *ngIf="!manage">
+      <i (click)="onShowDetails()" class="fas fa-circle-info text-primary"></i>
+      <i (click)="onBorrow()" class="fas fa-list-check text-primary"></i>
+      <i (click)="onAddToWaitList()" class="fas fa-heart text-danger"></i>
+    </div>
+    <div class="d-flex gap-3" *ngIf="manage">
+      <i (click)="onEdit()" class="fas fa-edit text-success"></i>
+      <i (click)="onShare()" class="fas fa-share-nodes text-primary"></i>
+      <i (click)="onArchive()" class="fas fa-archive text-danger"></i>
+    </div>
+  </div>
+</div>

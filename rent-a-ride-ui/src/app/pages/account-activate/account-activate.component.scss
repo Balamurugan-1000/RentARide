@@ -1,0 +1,78 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.text-center {
+  text-align: center;
+}
+.code-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.code-input input {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  text-align: center;
+  margin: 0 5px;
+}
+.code-input input:focus {
+  outline: none;
+}
+.code-input input::-webkit-inner-spin-button,
+.code-input input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.code-input input[type="number"] {
+  -moz-appearance: textfield;
+}
+.code-input input[type="number"]::-webkit-inner-spin-button,
+.code-input input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.code-input input[type="number"] {
+  -moz-appearance: textfield;
+}
+.code-input input[type="number"]::-webkit-inner-spin-button,
+.code-input input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.code-input input[type="number"] {
+  -moz-appearance: textfield;
+}
+.code-input input[type="number"]::-webkit-inner-spin-button,
+.code-input input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.code-input input[type="number"] {
+  -moz-appearance: textfield;
+}
+.code-input input[type="number"]::-webkit-inner-spin-button,
+.code-input input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.code-input input[type="number"] {
+  -moz-appearance: textfield;
+}
+.code-input input[type="number"]::-webkit-inner-spin-button,
+.code-input input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+.activate-message,.activate-error{
+  text-align: center;
+}
+.activate-error{
+  color: red;
+}

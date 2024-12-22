@@ -15,7 +15,7 @@ public class VehicleResponse {
     private String description;
     private String phone;
     private String price;
-    private byte[] cover;
+    private String cover;
     private double rate;
     private boolean archived;
     private boolean shareable;

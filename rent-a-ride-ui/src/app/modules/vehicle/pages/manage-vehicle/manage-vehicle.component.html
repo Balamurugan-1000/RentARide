@@ -1,0 +1,187 @@
+<div class="p-4 bg-light rounded shadow-sm">
+  <h2 class="text-primary text-center mb-4">🚗 Manage My Vehicle</h2>
+  <hr>
+
+  <!-- Error Message Alert -->
+  <div *ngIf="errorMsg.length > 0" class="alert alert-danger mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <span class="fw-bold">Please address the following issues:</span>
+    <ul class="mt-2 ps-4">
+      <li *ngFor="let msg of errorMsg">{{ msg }}</li>
+    </ul>
+  </div>
+
+
+  <!-- Card Layout for Image and Form -->
+  <div class="row g-4 fs-6 mt-4">
+    <!-- Image Section -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-center">
+            <img
+              class="img-fluid rounded mb-3"
+              [src]="selectedPicture || vehicleCover"
+              alt="Vehicle Image"
+            /> <div>
+              <input
+                class="form-control"
+                required
+                id="formFile"
+                type="file"
+                accept="image/*"
+                (change)="onFileSelected($event)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <form  #vehicleForm="ngForm" novalidate class="row g-4">
+            <!-- Title Input -->
+            <div class="col-12 col-md-6">
+              <label for="carModel" class="form-label fw-bold">Vehicle Title</label>
+              <input
+                id="carModel"
+                type="text"
+
+                class="form-control"
+                [(ngModel)]="vehicleRequest.carModel"
+                name="carModel"
+                #carModel="ngModel"
+                placeholder="Enter the car model"
+                required
+              />
+              <div class="text-danger" *ngIf="carModel.invalid && carModel.touched">
+                Vehicle Title is required.
+              </div>
+            </div>
+
+            <!-- Description Input -->
+            <div class="col-12">
+              <label for="description" class="form-label fw-bold">Vehicle Description</label>
+              <textarea
+                id="description"
+                class="form-control"
+                [(ngModel)]="vehicleRequest.description"
+                name="description"
+                #description="ngModel"
+                placeholder="Description about your Vehicle"
+                rows="3"
+                required
+              ></textarea>
+              <div class="text-danger" *ngIf="description.invalid && description.touched">
+                Description is required.
+              </div>
+            </div>
+
+            <!-- License Plate -->
+            <div class="col-12 col-md-6">
+              <label for="licensePlate" class="form-label fw-bold">License Plate</label>
+              <input
+                id="licensePlate"
+                type="text"
+                class="form-control"
+                [(ngModel)]="vehicleRequest.licensePlate"
+                name="licensePlate"
+                #licensePlate="ngModel"
+                placeholder="Enter the license plate"
+                required
+              />
+              <div class="text-danger" *ngIf="licensePlate.invalid && licensePlate.touched">
+                License Plate is required.
+              </div>
+            </div>
+
+            <!-- Owner Name -->
+            <div class="col-12 col-md-6">
+              <label for="ownerName" class="form-label fw-bold">Owner Name</label>
+              <input
+                id="ownerName"
+                type="text"
+                class="form-control"
+                [(ngModel)]="vehicleRequest.ownerName"
+                name="ownerName"
+                #ownerName="ngModel"
+                placeholder="Enter the owner name"
+                required
+              />
+              <div class="text-danger" *ngIf="ownerName.invalid && ownerName.touched">
+                Owner Name is required.
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="col-12 col-md-6">
+              <label for="phone" class="form-label fw-bold">Phone</label>
+              <input
+                id="phone"
+                type="text"
+                class="form-control"
+                [(ngModel)]="vehicleRequest.phone"
+                name="phone"
+                #phone="ngModel"
+                placeholder="Enter the phone number (e.g., +91XXXXXXXXXX)"
+                required
+                pattern="^\+?[1-9]{1}[0-9]{1,14}$"
+              />
+              <div class="text-danger" *ngIf="phone.invalid && phone.touched">
+                Phone number must include country code and 10 digits (e.g., +91XXXXXXXXXX).
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="col-12 col-md-6">
+              <label for="price" class="form-label fw-bold">Price</label>
+              <input
+                id="price"
+                type="text"
+                class="form-control"
+                [(ngModel)]="vehicleRequest.price"
+                name="price"
+                #price="ngModel"
+                placeholder="Enter the price"
+                required
+              />
+              <div class="text-danger" *ngIf="price.invalid && price.touched">
+                Price is required.
+              </div>
+            </div>
+  <div class="col-12 col-md-6 ">
+              <input
+                id="shareable"
+                type="checkbox"
+                class="form-check-input mx-2"
+                [(ngModel)]="vehicleRequest.shareable"
+                name="shareable"
+                required
+              />
+              <label for="shareable" class="form-check-label fw-bold">Shareable</label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-flex gap-3 justify-content-end col-12 text-end">
+              <button
+                [routerLink]="'/vehicles/my-vehicles'"
+                class="btn btn-danger btn-lg rounded-pill px-4"
+              >
+                <i class="fas fa-cancel me-1"></i> Cancel
+              </button>
+              <button
+                class="btn btn-primary btn-lg rounded-pill px-4"
+                (click)="saveVehicle()"
+              >
+                <i class="fas fa-save me-1"></i> Save Vehicle
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
