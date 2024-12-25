@@ -15,4 +15,5 @@ public class BorrowedVehicleResponse {
     private double rate;
     private boolean returned;
     private boolean returnApproved;
+    private String price;
 }

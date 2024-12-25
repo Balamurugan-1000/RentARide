@@ -51,4 +51,12 @@ public interface VehicleTransactionHistoryRepository extends JpaRepository<Vehic
     AND transaction.returnApproved = false
 """)
     Optional<VehicleTransactionHistory> findByVehicleIdAndOwnerId(int vehicleId, Integer userId);
+    @Query("""
+    SELECT COUNT(h) > 0\s
+    FROM VehicleTransactionHistory h\s
+    WHERE h.user.id = :userId\s
+      AND (h.returned = false OR h.returnApproved = false)
+""")
+    boolean existsByUserIdAndReturnedOrNotApproved(Integer userId);
+
 }

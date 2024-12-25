@@ -1,46 +1,70 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import {DOCUMENT, NgClass} from '@angular/common';
+import { Router, NavigationEnd, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, NgClass],
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss'] // Fix typo `styleUrl` → `styleUrls`
+  styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
-  logout() {
-    localStorage.clear();
-    window.location.href = '/login';
-  }
+  isNavbarOpen = false; // Track the state of the navbar (open/closed)
 
   constructor(
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private router: Router
   ) { }
+
+  logout(): void {
+    localStorage.clear();
+    window.location.href = '/login'; // Redirect to login page
+  }
 
   ngOnInit(): void {
     const linkColor = this.document.querySelectorAll('.nav-link');
+
+    // Highlight the active link on component initialization
+    this.updateActiveLink();
+
+    // Add click event listeners to update active links dynamically
     linkColor.forEach(link => {
-      const href = link.getAttribute('href') || '';
-
-
-      // Add 'active' to other links based on their href
-      if (link.classList.contains('first')) {
-        link.classList.add('active');
-      }
-
-      // Add click event listener for dynamic behavior
       link.addEventListener('click', () => {
-        // Remove 'active' from all links
         linkColor.forEach(l => l.classList.remove('active'));
-
-        // Add 'active' to the clicked link
         link.classList.add('active');
       });
     });
+
+    // Listen to route changes and update the active link
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.updateActiveLink();
+      }
+    });
   }
 
+  private updateActiveLink(): void {
+    const linkColor = this.document.querySelectorAll('.nav-link');
+    const currentRoute = this.router.url;
 
+    linkColor.forEach(link => {
+      const href = link.getAttribute('href') || '';
+      if (currentRoute === href) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
 
+  // Toggle navbar for mobile view
+  toggleNavbar(): void {
+    this.isNavbarOpen = !this.isNavbarOpen;
+  }
+
+  // Close the navbar after clicking a link
+  closeNavbar(): void {
+    this.isNavbarOpen = false;
+  }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {JwtHelperService} from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +20,24 @@ export class TokenService {
       return localStorage.getItem('token') as string;
     }
     return "";
+  }
+
+  isTokenNotValid() {
+    return !this.isTokenValid();
+  }
+
+  private isTokenValid() {
+    if (!this.token) {
+      return false;
+    }
+    const jwtHelper : JwtHelperService = new JwtHelperService();
+    const isExpired = jwtHelper.isTokenExpired(this.token);
+    if (isExpired) {
+      this.token = "";
+      localStorage.clear()
+      return false
+    }
+    return true;
+
   }
 }

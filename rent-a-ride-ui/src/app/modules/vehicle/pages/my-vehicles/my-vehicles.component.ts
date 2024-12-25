@@ -12,8 +12,7 @@ import { VehicleCardComponent } from "../../components/vehicle-card/vehicle-card
   templateUrl: './my-vehicles.component.html',
   styleUrl: './my-vehicles.component.scss'
 })
-// export class MyVehiclesComponent {
-// }
+
 export class MyVehiclesComponent implements OnInit {
 
   vehicleResponse: PageResponseVehicleResponse = {}
@@ -72,8 +71,28 @@ export class MyVehiclesComponent implements OnInit {
     this.findAllVehicles()
   }
   shareVehicle(vehicle: VehicleResponse) {
+    console.log(vehicle.id)
+    this.vehicleService.updateShaeableStatus({
+      'vehicle-id' : vehicle.id as number
+    }).subscribe(
+      {
+        next : () => {
+          vehicle.shareable = !vehicle.shareable
+        }
+      }
+    );
   }
   archiveVehicle(vehicle: VehicleResponse) {
+    this.vehicleService.updateArchivedStatus({
+      'vehicle-id' : vehicle.id as number
+    }).subscribe(
+      {
+        next : () => {
+          vehicle.archived = !vehicle.archived
+        }
+      }
+    )
+
   }
   editVehicle(vehicle: VehicleResponse) {
 this.router.navigate(['vehicles', 'manage' , vehicle.id])

@@ -151,30 +151,45 @@ public class VehicleService {
     }
 
     public Integer borrowVehicle(Integer vehicleId, Authentication connectedUser) {
-        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
+        // Retrieve the vehicle or throw an exception if not found
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
 
-        if(vehicle.isArchived() || !vehicle.isShareable()){
+        // Check if the vehicle is archived or not shareable
+        if (vehicle.isArchived() || !vehicle.isShareable()) {
             throw new OperationNotPermittedException("The requested vehicle is not available");
         }
-        User user = ((User) connectedUser.getPrincipal());
-        if(Objects.equals(user.getId(),vehicle.getOwner().getId())){
-            throw new OperationNotPermittedException("You can not borrow your own Vehicle");
-        }
-        final boolean isAlreadyBorrowed = vehicleTransactionHistoryRepository.isAlreadyBorrowedByUser(vehicleId , user.getId());
 
-        if(isAlreadyBorrowed){
+        // Get the authenticated user
+        User user = (User) connectedUser.getPrincipal();
+
+        // Ensure the user is not trying to borrow their own vehicle
+        if (Objects.equals(user.getId(), vehicle.getOwner().getId())) {
+            throw new OperationNotPermittedException("You cannot borrow your own vehicle");
+        }
+
+        // Check if the user already has an unreturned vehicle
+        boolean hasUnreturnedVehicles = vehicleTransactionHistoryRepository.existsByUserIdAndReturnedOrNotApproved(user.getId());
+        if (hasUnreturnedVehicles) {
+            throw new OperationNotPermittedException("You cannot borrow another vehicle until you return the current one");
+        }
+
+        // Check if the requested vehicle is already borrowed by the user
+        boolean isAlreadyBorrowed = vehicleTransactionHistoryRepository.isAlreadyBorrowedByUser(vehicleId, user.getId());
+        if (isAlreadyBorrowed) {
             throw new OperationNotPermittedException("The requested vehicle is already borrowed");
         }
 
-        VehicleTransactionHistory vehicleTransactionHistory =  VehicleTransactionHistory.builder()
+        // Create a new transaction for borrowing the vehicle
+        VehicleTransactionHistory vehicleTransactionHistory = VehicleTransactionHistory.builder()
                 .user(user)
                 .vehicle(vehicle)
                 .returned(false)
                 .returnApproved(false)
                 .build();
 
-        return  vehicleTransactionHistoryRepository.save(vehicleTransactionHistory).getId();
-
+        // Save the transaction and return the ID
+        return vehicleTransactionHistoryRepository.save(vehicleTransactionHistory).getId();
     }
 
     public Integer returnVehicle(int vehicleId, Authentication connectedUser) {
@@ -205,8 +220,8 @@ public class VehicleService {
             throw new OperationNotPermittedException("The requested vehicle is not available");
         }
         User user = ((User) connectedUser.getPrincipal());
-        if(Objects.equals(user.getId(),vehicle.getOwner().getId())){
-            throw new OperationNotPermittedException("You can not return your own Vehicle");
+        if(!Objects.equals(user.getId(),vehicle.getOwner().getId())){
+            throw new OperationNotPermittedException("You Are not the owner to approve this vehicle return ");
         }
         VehicleTransactionHistory vehicleTransactionHistory =
                 vehicleTransactionHistoryRepository.findByVehicleIdAndOwnerId(vehicleId , user.getId())
@@ -220,14 +235,7 @@ public class VehicleService {
         return vehicleTransactionHistoryRepository.save(vehicleTransactionHistory).getId();
     }
 
-//    public void uploadVehicleCoverPicture(MultipartFile file, Authentication connectedUser, int vehicleId) {
-//        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
-//        User user = ((User) connectedUser.getPrincipal());
-//        var vehicleCover = fileStorageService.uploadFileToSupabase(file, user.getId());
-//        vehicle.setVehicleCover(vehicleCover);
-//        vehicleRepository.save(vehicle);
-//
-//    }
+
 public Vehicle save(String url, Authentication connectedUser, int vehicleId) {
     // Retrieve the vehicle or throw an exception if not found
     Vehicle vehicle = vehicleRepository.findById(vehicleId)
@@ -236,7 +244,6 @@ public Vehicle save(String url, Authentication connectedUser, int vehicleId) {
     // Update the cover URL
     vehicle.setVehicleCover(url);
 
-    // Save to the database
     return  vehicleRepository.save(vehicle);
 }
 

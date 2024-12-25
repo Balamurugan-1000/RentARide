@@ -23,7 +23,17 @@ export class ManageVehicleComponent implements OnInit {
   errorMsg: Array<string> = [];
   selectedPicture: string = "";  // To hold the selected image preview
   selectedVehicleImage: File | null = null;  // The actual selected file
-  vehicleRequest: VehicleRequest = { carModel: "", description: "", licensePlate: "", ownerName: "", phone: "" };
+  vehicleRequest: VehicleRequest = {
+    id: 0,
+    carModel: "",
+    description: "",
+    licensePlate: "",
+    ownerName: "",
+    phone: "",
+    price: "",
+    shareable: false,
+    cover: ""
+  };
 
   constructor(
     private vehicleService: VehicleService,
@@ -33,58 +43,54 @@ export class ManageVehicleComponent implements OnInit {
 
   ngOnInit(): void {
     const vehicleId = this.activatedRoute.snapshot.paramMap.get('vehicleId');
-    this.vehicleService.findVehicleById({
-      'vehicle-id': vehicleId as unknown as number
-    }).subscribe({
-      next: vehicle => {
-        this.vehicleRequest = {
-          id: vehicle.id,
-          carModel: vehicle.carModel as string,
-          description: vehicle.description as string,
-          licensePlate: vehicle.licensePlate as string,
-          ownerName: vehicle.ownerName as string,
-          phone: vehicle.phone as string,
-          shareable: vehicle.shareable,
-          cover: vehicle.cover,
-
-          price : vehicle.price
-        };
-        if (vehicle.cover) {
-          this.selectedPicture = vehicle.cover;  // Initialize with the existing vehicle cover
+    if (vehicleId) {
+      this.vehicleService.findVehicleById({
+        'vehicle-id': +vehicleId
+      }).subscribe({
+        next: vehicle => {
+          this.vehicleRequest = {
+            id: vehicle.id,
+            carModel: vehicle.carModel || '',
+            description: vehicle.description || '',
+            licensePlate: vehicle.licensePlate || '',
+            ownerName: vehicle.ownerName || '',
+            phone: vehicle.phone || '',
+            price: vehicle.price || '',
+            shareable: vehicle.shareable || false,
+            cover: vehicle.cover || ''
+          };
+          if (vehicle.cover) {
+            this.selectedPicture = vehicle.cover;  // Initialize with the existing vehicle cover
+          }
+        },
+        error: err => {
+          console.error('Error fetching vehicle:', err);
+          this.errorMsg = ['Error fetching vehicle data.'];
         }
-      },
-      error: err => {
-        console.error('Error fetching vehicle:', err);
-        this.errorMsg = ['Error fetching vehicle data.'];
-      }
-    });
+      });
+    }
   }
 
-  // Fallback for vehicle cover image if no image is selected
-  vehicleCover = this.selectedVehicleImage || this.vehicleRequest.cover || '/No_IMAGE.jpeg';
-
-  // Handle file selection
-  onFileSelected(event: any) {
+  // Handle file selection for vehicle cover image
+  onFileSelected(event: any): void {
     this.selectedVehicleImage = event.target.files[0];
     if (this.selectedVehicleImage) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.selectedPicture = reader.result as string;  // Store the preview image
+        this.selectedPicture = reader.result as string;  // Set image preview
       };
       reader.readAsDataURL(this.selectedVehicleImage);
     }
   }
 
   // Save vehicle details
-  async saveVehicle() {
+  async saveVehicle(): Promise<void> {
     let imageUrl: string | null = null;
 
-    // Check if there is an image to upload
+    // Upload image if selected
     if (this.selectedVehicleImage) {
       const filePath = `vehicles/${Date.now()}-${this.selectedVehicleImage.name}`;
-
       try {
-        // Upload image to Supabase storage
         const { data, error } = await supabase.storage.from('vehicle-images').upload(filePath, this.selectedVehicleImage);
         if (error) {
           console.error('Supabase upload error:', error.message);
@@ -96,10 +102,7 @@ export class ManageVehicleComponent implements OnInit {
         const { data: publicUrlData } = supabase.storage.from('vehicle-images').getPublicUrl(filePath);
         imageUrl = publicUrlData.publicUrl;
         console.log('Uploaded Image URL:', imageUrl);
-
-        // Update vehicle request with the image URL
-        this.vehicleRequest.cover = imageUrl;
-
+        this.vehicleRequest.cover = imageUrl;  // Update cover URL
       } catch (err) {
         console.error('Error during file upload:', err);
         this.errorMsg = ['Error uploading image.'];
@@ -113,10 +116,10 @@ export class ManageVehicleComponent implements OnInit {
     }).subscribe({
       next: response => {
         this.vehicleRequest = {
+          id: 0,
           cover: '',
           carModel: '',
           description: '',
-          id: 0,
           licensePlate: '',
           ownerName: '',
           phone: '',
@@ -124,7 +127,7 @@ export class ManageVehicleComponent implements OnInit {
           shareable: false
         }
         console.log('Vehicle saved successfully:', response);
-        this.router.navigate(["vehicles" , 'my-vehicles']);
+        this.router.navigate(["vehicles", 'my-vehicles']);
       },
       error: err => {
         console.error('Error saving vehicle:', err);
