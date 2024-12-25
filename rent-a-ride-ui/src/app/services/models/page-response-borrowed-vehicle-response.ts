@@ -11,4 +11,5 @@ export interface PageResponseBorrowedVehicleResponse {
   size?: number;
   totalElements?: number;
   totalPages?: number;
+  price?: string;
 }

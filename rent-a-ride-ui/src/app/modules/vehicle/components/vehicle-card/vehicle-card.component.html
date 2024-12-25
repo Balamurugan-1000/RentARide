@@ -1,4 +1,9 @@
-<div class="card position-relative shadow-sm mb-4 mx-auto h-100" style="max-width: 23rem; min-width: 17rem;">
+<div
+  class="card position-relative shadow-sm mb-4 mx-auto border-3 "
+  style="max-width: 23rem; min-width: 17rem; min-height: 33rem;"
+  [class.border-success]="vehicle.shareable"
+  [class.border-warning]="vehicle.archived"
+>
   <img [src]="vehicle.cover"
        class="card-img-top position-sticky top-0 img-fluid" style="height: 15rem;"
     alt="Vehicle Image">
@@ -39,11 +44,10 @@
       <span *ngIf="vehicle.rate !=undefined && true  && vehicle.rate > 0"> {{ vehicle.rate }}/5
       </span>
     </div>
-    <div class="d-flex gap-3" *ngIf="!manage">
-      <i (click)="onShowDetails()" class="fas fa-circle-info text-primary"></i>
-      <i (click)="onBorrow()" class="fas fa-list-check text-primary"></i>
-      <i (click)="onAddToWaitList()" class="fas fa-heart text-danger"></i>
-    </div>
+    <button  (click)="onBorrow()" class="btn btn-outline-primary" *ngIf="!manage">
+
+      <i  class="fas fa-list-check "></i> Borrow
+    </button>
     <div class="d-flex gap-3" *ngIf="manage">
       <i (click)="onEdit()" class="fas fa-edit text-success"></i>
       <i (click)="onShare()" class="fas fa-share-nodes text-primary"></i>

@@ -76,15 +76,14 @@ export class VehicleListComponent implements OnInit {
       "vehicle-id": vehicle.id as number
     }).subscribe({
       next: (response) => {
-        console.log(response)
         this.level = "success"
         this.message = "Vehicle borrowed successfully"
         this.findAllVehicles()
       },
       error: (error) => {
-        console.log(error)
+        console.log(error.error.error)
         this.level = "error"
-        this.message = "Vehicle borrowed failed"
+        this.message = error.error.error
       }
     })
   }

@@ -10,4 +10,5 @@ export interface BorrowedVehicleResponse {
   rate?: number;
   returnApproved?: boolean;
   returned?: boolean;
+  price?: string;
 }

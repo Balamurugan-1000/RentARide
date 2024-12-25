@@ -15,10 +15,10 @@ export class AuthRedirectGuard implements CanActivate {
       if (this.router.url !== '/vehicles') {
         this.router.navigate(['/vehicles']);
       }
-      return true;
+      return true; // User is authenticated
     }
 
-    return true; // Allow route activation
+    return true; // Redirect to login page
   }
 
   private hasValidToken(): boolean {
@@ -31,9 +31,9 @@ export class AuthRedirectGuard implements CanActivate {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const isExpired = payload.exp && Date.now() >= payload.exp * 10000;
-      return !isExpired; // Return true if not expired
+      return !isExpired;
     } catch (error) {
-      return false; // Invalid token
+      return false;
     }
   }
 }

@@ -60,7 +60,7 @@ public class BeansConfig {
             config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
             config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
             config.setExposedHeaders(Collections.singletonList("Authorization"));
-            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS" , "PATCH"));
             source.registerCorsConfiguration("/**", config);
             return new CorsFilter(source);
         }

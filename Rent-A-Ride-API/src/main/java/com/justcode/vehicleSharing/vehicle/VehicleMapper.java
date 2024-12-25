@@ -50,6 +50,7 @@ public class VehicleMapper {
                  .rate(history.getVehicle().getRate())
                 .returnApproved(history.isReturnApproved())
                 .returned(history.isReturned())
+                .price(history.getVehicle().getPrice())
                 .build();
     }
 }
