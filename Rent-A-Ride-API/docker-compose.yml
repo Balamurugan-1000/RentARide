@@ -1,12 +1,12 @@
 services:
   postgres:
-    container_name: postgres-sql-bi
+    container_name: postgres-sql-rar
     image: postgres
     environment:
       POSTGRES_USER: bala
       POSTGRES_PASSWORD: 1234
       PGDATA: /var/lib/postgresql/data
-      POSTGRES_DB: book_insta
+      POSTGRES_DB: vehicle_sharing
     volumes:
       - postgres:/data/postgres
     ports:
@@ -15,11 +15,20 @@ services:
       - spring-demo
     restart: unless-stopped
   mail-dev:
-    container_name: mail-dev-bi
+    container_name: mail-dev-rar
     image: maildev/maildev
     ports:
       - "1080:1080"
       - "1025:1025"
+  rar-api:
+    container_name: rar-api
+    image: rar/rar:1.0.0
+    ports:
+      - 8088:8088
+    networks:
+      - spring-demo
+    depends_on:
+      - postgres
 
 
 networks:
